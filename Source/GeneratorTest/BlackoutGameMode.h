@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "GeneratorActor.h"
-#include "Engine/World.h"
 #include "BlackoutGameMode.generated.h"
 
 /**

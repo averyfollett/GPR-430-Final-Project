@@ -45,8 +45,6 @@ void AGeneratorActor::BeginPlay()
 void AGeneratorActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	//SetActorLocation(GetActorLocation() + FVector(1.0, 0.0, 0.0)); //just using this to test movement replication
 }
 
 void AGeneratorActor::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const

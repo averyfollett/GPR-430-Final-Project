@@ -6,7 +6,4 @@
 void ABlackoutGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	FTransform SpawnLocation;
-	//GetWorld()->SpawnActor(AGeneratorActor::StaticClass(), &SpawnLocation);
 }

@@ -21,7 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	int SetHeldBy(TSubclassOf<AArcticCharacter> Character);
+	int SetHeldBy(TSubclassOf<AArcticCharacter> Character = nullptr);
 
 	UFUNCTION()
 	int SetIsPickedUp(bool bPickUp);

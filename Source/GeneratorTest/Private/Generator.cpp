@@ -27,22 +27,25 @@ void AGenerator::Tick(float DeltaTime)
 
 }
 
-int AGenerator::SetHeldBy(TSubclassOf<AArcticCharacter> Character)
+int AGenerator::SetHeldBy(const TSubclassOf<AArcticCharacter> Character)
 {
-	if (HeldBy && Character)
+	if (IsValid(HeldBy) && IsValid(Character))
 	{
 		if (HeldBy != Character)
 		{
 			HeldBy.GetDefaultObject()->GeneratorStolen();
 		}
-		
 		HeldBy = Character;
 		return 1;
 	}
-	return 0;
+	else
+	{
+		HeldBy = Character;
+		return 0;
+	}
 }
 
-int AGenerator::SetIsPickedUp(bool bPickUp)
+int AGenerator::SetIsPickedUp(const bool bPickUp)
 {
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
@@ -53,12 +56,12 @@ int AGenerator::SetIsPickedUp(bool bPickUp)
 		{
 			if (bPickUp)
 			{
-				//TODO: Generator Picked Up function in Generator Outlet class
+				Cast<AGeneratorOutlet>(Actor)->GeneratorPickedUp();
 				return 1;
 			}
 			else
 			{
-				//TODO: Snap To Center function in Generator Outlet class
+				Cast<AGeneratorOutlet>(Actor)->SnapGeneratorToCenter(this);
 				return 0;
 			}
 		}

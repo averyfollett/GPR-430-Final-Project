@@ -83,12 +83,20 @@ int AArcticCharacter::Drop()
 
 int AArcticCharacter::PlayerReleaseGenerator()
 {
-	const FDetachmentTransformRules DetachmentRules = FDetachmentTransformRules(EDetachmentRule::KeepWorld, EDetachmentRule::KeepRelative, EDetachmentRule::KeepWorld, true);
+	const FDetachmentTransformRules DetachmentRules = FDetachmentTransformRules(
+		EDetachmentRule::KeepWorld,
+		EDetachmentRule::KeepRelative,
+		EDetachmentRule::KeepWorld,
+		true);
 	Generator.GetDefaultObject()->GetRootComponent()->DetachFromComponent(DetachmentRules);
 	Generator.GetDefaultObject()->SetActorLocation(Generator.GetDefaultObject()->GetActorLocation() + GetActorForwardVector() * DropOffset);
 	Generator.GetDefaultObject()->bIsHeld = false;
-	//TODO: Finish this function call
-	//Generator.GetDefaultObject()->SetHeldBy()
+	Generator.GetDefaultObject()->SetHeldBy();
+	Generator.GetDefaultObject()->SetIsPickedUp(false);
+	bIsHoldingObject = false;
+	bGeneratorInHand = false;
+	bSwitchReachAnim = false;
+	bIsReachingForGenerator = false;
 	return 1;
 }
 

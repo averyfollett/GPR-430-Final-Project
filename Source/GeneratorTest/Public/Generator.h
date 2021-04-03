@@ -21,7 +21,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	int SetHeldBy(TSubclassOf<AArcticCharacter> Character = nullptr);
+	int SetHeldBy(AArcticCharacter* Character = nullptr);
 
 	UFUNCTION()
 	int SetIsPickedUp(bool bPickUp);
@@ -34,7 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AArcticCharacter> HeldBy;
+	AArcticCharacter* HeldBy;
 
 	UPROPERTY(EditAnywhere)
 	bool bBeingPlaced = false;

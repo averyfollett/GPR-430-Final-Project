@@ -55,9 +55,41 @@ protected:
 
 	UFUNCTION()
 	int Drop();
+	UFUNCTION()
+	int PickUp();
 
 	UFUNCTION()
 	int PlayerReleaseGenerator();
+
+	UFUNCTION()
+	void TryRotateWire();
+
+	UFUNCTION()
+	void RotateToGenerator();
+
+	UFUNCTION()
+	void AttachGenerator();
+
+	UFUNCTION()
+	void SetCameraLocation(FVector Location);
+
+	UFUNCTION()
+	void InputAxisTurnRate(float Value);
+	UFUNCTION()
+	void InputAxisLookUpRate(float Value);
+	UFUNCTION()
+	void InputAxisMoveForward(float Value);
+	UFUNCTION()
+	void InputAxisMoveRight(float Value);
+	UFUNCTION()
+	void InputActionInteractPressed();
+	UFUNCTION()
+	void InputActionInteractReleased();
+
+	UPROPERTY(EditDefaultsOnly)
+	float BaseTurnRate = 45.0f;
+	UPROPERTY(EditDefaultsOnly)
+	float BaseLookUpRate = 45.0f;
 
 	UPROPERTY(EditAnywhere)
 	bool bIsHoldingObject = false;

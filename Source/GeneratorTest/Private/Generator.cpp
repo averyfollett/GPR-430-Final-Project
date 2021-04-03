@@ -27,13 +27,13 @@ void AGenerator::Tick(float DeltaTime)
 
 }
 
-int AGenerator::SetHeldBy(const TSubclassOf<AArcticCharacter> Character)
+int AGenerator::SetHeldBy(AArcticCharacter* Character)
 {
 	if (IsValid(HeldBy) && IsValid(Character))
 	{
 		if (HeldBy != Character)
 		{
-			HeldBy.GetDefaultObject()->GeneratorStolen();
+			HeldBy->GeneratorStolen();
 		}
 		HeldBy = Character;
 		return 1;

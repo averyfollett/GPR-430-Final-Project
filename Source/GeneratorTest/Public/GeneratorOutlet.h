@@ -17,11 +17,27 @@ public:
 	// Sets default values for this actor's properties
 	AGeneratorOutlet();
 
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* OutletBase;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* OutletTop;
+
 	UFUNCTION()
 	void GeneratorPickedUp();
 
 	UFUNCTION()
 	void SnapGeneratorToCenter(AGenerator* Generator);
+
+	UFUNCTION()
+	void ActorOverlapped(AActor* Self, AActor* OtherActor);
+	UFUNCTION()
+	void ActorOverlapEnded(AActor* Self, AActor* OtherActor);
+
+	UPROPERTY(EditAnywhere)
+	bool bIsPressed = false;
+	UPROPERTY(EditAnywhere)
+	bool bStaysPressed = false;
 
 protected:
 	// Called when the game starts or when spawned

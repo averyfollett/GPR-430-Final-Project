@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Generator.h"
+#include "Powerable.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -93,11 +94,27 @@ int AArcticCharacter::PickUp()
 		Generator.GetDefaultObject()->bIsHeld = true;
 		Generator.GetDefaultObject()->SetHeldBy(this);
 		Generator.GetDefaultObject()->SetIsPickedUp(true);
-		AttachGenerator();
+		PlayerHoldingGenerator();
 
 		return 1;
 	}
 
+	return 0;
+}
+
+int AArcticCharacter::PlayerHoldingGenerator()
+{
+	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepWorld,
+		true);
+	if (Generator.GetDefaultObject()->GetRootComponent()->AttachToComponent(GetMesh(), AttachmentRules, "spine_02Socket"))
+	{
+		bIsHoldingObject = bGeneratorInHand = true;
+		bIsReachingForGenerator = false;
+		return 1;
+	}
 	return 0;
 }
 
@@ -119,20 +136,16 @@ int AArcticCharacter::PlayerReleaseGenerator()
 
 void AArcticCharacter::TryRotateWire()
 {
-	//TODO: Implement function
-}
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors);
 
-void AArcticCharacter::RotateToGenerator()
-{
-	//TODO: Implement function
-}
-
-void AArcticCharacter::AttachGenerator()
-{
-	Generator.GetDefaultObject()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "spine_02Socket");
-	//Used delay in BP
-	bIsHoldingObject = bGeneratorInHand = true;
-	bIsReachingForGenerator = false;
+	for (AActor* Actor : OverlappingActors)
+	{
+		if (Cast<IPowerable>(Actor))
+		{
+			//TODO: Implement server and client rotate functions
+		}
+	}
 }
 
 void AArcticCharacter::SetCameraLocation(FVector Location)

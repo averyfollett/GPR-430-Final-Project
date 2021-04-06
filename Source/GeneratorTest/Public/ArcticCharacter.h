@@ -59,16 +59,15 @@ protected:
 	int PickUp();
 
 	UFUNCTION()
+	int PlayerHoldingGenerator();
+	UFUNCTION()
 	int PlayerReleaseGenerator();
 
 	UFUNCTION()
 	void TryRotateWire();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintImplementableEvent)
 	void RotateToGenerator();
-
-	UFUNCTION()
-	void AttachGenerator();
 
 	UFUNCTION()
 	void SetCameraLocation(FVector Location);

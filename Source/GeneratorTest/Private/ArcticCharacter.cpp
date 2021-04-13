@@ -8,7 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Generator.h"
-#include "Powerable.h"
+#include "WireInterface.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -36,7 +36,12 @@ AArcticCharacter::AArcticCharacter()
 void AArcticCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	//TODO: Get generator actor and set the local variable
+	
+	//Find generator and set reference
+	TArray<AActor*> FoundGenerators;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGenerator::StaticClass(), FoundGenerators);
+	Generator = Cast<AGenerator>(FoundGenerators[0]);
+	
 	SpawnCamera();
 	Client_UpdateColor();
 	SetTerrainBasedOnLevel();
@@ -85,21 +90,26 @@ int AArcticCharacter::Drop()
 
 int AArcticCharacter::PickUp()
 {
-	if (UKismetMathLibrary::Vector_Distance(Generator.GetDefaultObject()->GetActorLocation(), GetActorLocation()) <= PickupRadius)
+	if (IsValid(Generator))
 	{
-		RotateToGenerator();
-		bIsReachingForGenerator = true;
-		//Might want a delay here
-		//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		Generator.GetDefaultObject()->bIsHeld = true;
-		Generator.GetDefaultObject()->SetHeldBy(this);
-		Generator.GetDefaultObject()->SetIsPickedUp(true);
-		PlayerHoldingGenerator();
+		if (UKismetMathLibrary::Vector_Distance(Generator->GetActorLocation(), GetActorLocation()) <= PickupRadius)
+		{
+			RotateToGenerator();
+			bIsReachingForGenerator = true;
+			//Might want a delay here
+			//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			Generator->bIsHeld = true;
+			Generator->SetHeldBy(this);
+			Generator->SetIsPickedUp(true);
+			PlayerHoldingGenerator();
 
-		return 1;
+			return 1;
+		}
+		
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }
 
 int AArcticCharacter::PlayerHoldingGenerator()
@@ -109,7 +119,7 @@ int AArcticCharacter::PlayerHoldingGenerator()
 		EAttachmentRule::SnapToTarget,
 		EAttachmentRule::KeepWorld,
 		true);
-	if (Generator.GetDefaultObject()->GetRootComponent()->AttachToComponent(GetMesh(), AttachmentRules, "spine_02Socket"))
+	if (Generator->GetRootComponent()->AttachToComponent(GetMesh(), AttachmentRules, "spine_02Socket"))
 	{
 		bIsHoldingObject = bGeneratorInHand = true;
 		bIsReachingForGenerator = false;
@@ -125,32 +135,47 @@ int AArcticCharacter::PlayerReleaseGenerator()
 		EDetachmentRule::KeepRelative,
 		EDetachmentRule::KeepWorld,
 		true);
-	Generator.GetDefaultObject()->GetRootComponent()->DetachFromComponent(DetachmentRules);
-	Generator.GetDefaultObject()->SetActorLocation(Generator.GetDefaultObject()->GetActorLocation() + GetActorForwardVector() * DropOffset);
-	Generator.GetDefaultObject()->bIsHeld = false;
-	Generator.GetDefaultObject()->SetHeldBy();
-	Generator.GetDefaultObject()->SetIsPickedUp(false);
+	Generator->GetRootComponent()->DetachFromComponent(DetachmentRules);
+	Generator->SetActorLocation(Generator->GetActorLocation() + GetActorForwardVector() * DropOffset);
+	Generator->bIsHeld = false;
+	Generator->SetHeldBy();
+	Generator->SetIsPickedUp(false);
 	bIsHoldingObject = bGeneratorInHand = bSwitchReachAnim = bIsReachingForGenerator = false;
 	return 1;
 }
 
-void AArcticCharacter::TryRotateWire()
+void AArcticCharacter::TryRotateWire() const
 {
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
 
 	for (AActor* Actor : OverlappingActors)
 	{
-		if (Cast<IPowerable>(Actor))
+		if (Cast<IWireInterface>(Actor))
 		{
-			//TODO: Implement server and client rotate functions
+			ServerRotateWire(Actor);
+
+			if (!HasAuthority())
+			{
+				ClientRotateWire(Actor);
+			}
 		}
 	}
 }
 
-void AArcticCharacter::SetCameraLocation(FVector Location)
+void AArcticCharacter::ServerRotateWire(AActor* Actor) const
 {
-	OwnedCamera.GetDefaultObject()->SetActorLocation(Location);
+	Cast<IWireInterface>(Actor)->RotateWire();
+}
+
+void AArcticCharacter::ClientRotateWire(AActor* Actor) const
+{
+	Cast<IWireInterface>(Actor)->RotateWire();
+}
+
+void AArcticCharacter::SetCameraLocation(FVector Location) const
+{
+	OwnedCamera->SetActorLocation(Location);
 }
 
 void AArcticCharacter::InputAxisTurnRate(float Value)
@@ -213,6 +238,8 @@ void AArcticCharacter::Tick(float DeltaTime)
 	}
 
 	Client_UpdateColor();
+	
+	//Idle();
 }
 
 // Called to bind functionality to input

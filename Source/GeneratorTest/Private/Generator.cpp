@@ -4,6 +4,7 @@
 #include "Generator.h"
 #include "ArcticCharacter.h"
 #include "GeneratorOutlet.h"
+#include "Components/PointLightComponent.h"
 
 // Sets default values
 AGenerator::AGenerator()
@@ -11,6 +12,8 @@ AGenerator::AGenerator()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	PointLightComponent = CreateDefaultSubobject<UPointLightComponent>(TEXT("Point Light"));
+	PointLightComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

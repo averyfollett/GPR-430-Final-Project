@@ -3,19 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+
+#include "Engine/PointLight.h"
+#include "GameFramework/Character.h"
 #include "Generator.generated.h"
 
 class AArcticCharacter;
 
 UCLASS()
-class GENERATORTEST_API AGenerator : public AActor
+class GENERATORTEST_API AGenerator : public ACharacter
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AGenerator();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPointLightComponent* PointLightComponent;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -44,6 +44,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//UFUNCTION()
+	//void Idle();
+
 	UFUNCTION()
 	int SpawnCamera();
 
@@ -64,13 +67,17 @@ protected:
 	int PlayerReleaseGenerator();
 
 	UFUNCTION()
-	void TryRotateWire();
+	void TryRotateWire() const;
+	UFUNCTION()
+	void ServerRotateWire(AActor* Actor) const;
+	UFUNCTION()
+    void ClientRotateWire(AActor* Actor) const;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void RotateToGenerator();
 
 	UFUNCTION()
-	void SetCameraLocation(FVector Location);
+	void SetCameraLocation(FVector Location) const;
 
 	UFUNCTION()
 	void InputAxisTurnRate(float Value);
@@ -85,56 +92,56 @@ protected:
 	UFUNCTION()
 	void InputActionInteractReleased();
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BaseTurnRate = 45.0f;
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BaseLookUpRate = 45.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsHoldingObject = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float PlayerReachDistance = 200.0f;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AGenerator> Generator;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AGenerator* Generator;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> IgnoreActorArray;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsReachingForGenerator = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bSwitchReachAnim = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bGeneratorInHand = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bExtendArms = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bLeanForward;
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACameraActor> OwnedCamera;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACameraActor* OwnedCamera;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsPoot = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DropOffset = 70.0f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsSpeedy = false;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UMaterialInstance*> MaterialArray;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int PlayerID = 0;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Terrain = 0;
 };

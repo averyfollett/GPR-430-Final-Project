@@ -32,12 +32,16 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
     //Delegate for searching for sessions
     FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+    //Delegate for joining a session
+    FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
 
     //Handles to registered delegates for creating/starting a session
     FDelegateHandle OnCreateSessionCompleteDelegateHandle;
     FDelegateHandle OnStartSessionCompleteDelegateHandle;
     //Handle to registered delegate for searching a session
     FDelegateHandle OnFindSessionsCompleteDelegateHandle;
+    //Handle to registered delegate for joining a session
+    FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 
     
     TSharedPtr<class FOnlineSessionSettings> SessionSettings;
@@ -76,4 +80,22 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     *	@param bWasSuccessful true if the async action completed without error, false if there was an error
     */
     void OnFindSessionsComplete(bool bWasSuccessful);
+
+    /**
+    *	Joins a session via a search result
+    *
+    *	@param SessionName name of session
+    *	@param SearchResult Session to join
+    *
+    *	@return bool true if successful, false otherwise
+    */
+    bool JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult);
+
+    /**
+    *	Delegate fired when a session join request has completed
+    *
+    *	@param SessionName the name of the session this callback is for
+    *	@param bWasSuccessful true if the async action completed without error, false if there was an error
+    */
+    void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };

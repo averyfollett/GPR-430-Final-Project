@@ -14,6 +14,8 @@ UNWGameInstance::UNWGameInstance(const FObjectInitializer& ObjectInitializer)
 	OnStartSessionCompleteDelegate = FOnStartSessionCompleteDelegate::CreateUObject(this, &UNWGameInstance::OnStartOnlineGameComplete);
 	/** Bind function for FINDING a Session */
 	OnFindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &UNWGameInstance::OnFindSessionsComplete);
+	/** Bind function for JOINING a Session */
+	OnJoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &UNWGameInstance::OnJoinSessionComplete);
 }
 
 bool UNWGameInstance::HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bIsPresence, int32 MaxNumPlayers)
@@ -187,6 +189,68 @@ void UNWGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 					// This is something you can't do in Blueprint for example!
 					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), SearchIdx+1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName)));
 				}
+			}
+		}
+	}
+}
+
+bool UNWGameInstance::JoinSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, const FOnlineSessionSearchResult& SearchResult)
+{
+	// Return bool
+	bool bSuccessful = false;
+
+	// Get OnlineSubsystem we want to work with
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+
+	if (OnlineSub)
+	{
+		// Get SessionInterface from the OnlineSubsystem
+		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+
+		if (Sessions.IsValid() && UserId.IsValid())
+		{
+			// Set the Handle again
+			OnJoinSessionCompleteDelegateHandle = Sessions->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+			
+			// Call the "JoinSession" Function with the passed "SearchResult". The "SessionSearch->SearchResults" can be used to get such a
+			// "FOnlineSessionSearchResult" and pass it. Pretty straight forward!
+			bSuccessful = Sessions->JoinSession(*UserId, SessionName, SearchResult);
+		}
+	}
+		
+	return bSuccessful;
+}
+
+void UNWGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("OnJoinSessionComplete %s, %d"), *SessionName.ToString(), static_cast<int32>(Result)));
+
+	// Get the OnlineSubsystem we want to work with
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	if (OnlineSub)
+	{
+		// Get SessionInterface from the OnlineSubsystem
+		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+
+		if (Sessions.IsValid())
+		{
+			// Clear the Delegate again
+			Sessions->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
+
+			// Get the first local PlayerController, so we can call "ClientTravel" to get to the Server Map
+			// This is something the Blueprint Node "Join Session" does automatically!
+			APlayerController * const PlayerController = GetFirstLocalPlayerController();
+
+			// We need a FString to use ClientTravel and we can let the SessionInterface contruct such a
+			// String for us by giving him the SessionName and an empty String. We want to do this, because
+			// Every OnlineSubsystem uses different TravelURLs
+			FString TravelURL;
+
+			if (PlayerController && Sessions->GetResolvedConnectString(SessionName, TravelURL))
+			{
+				// Finally call the ClienTravel. If you want, you could print the TravelURL to see
+				// how it really looks like
+				PlayerController->ClientTravel(TravelURL, ETravelType::TRAVEL_Absolute);
 			}
 		}
 	}

@@ -26,16 +26,22 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
         */
         bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bISPresence, int32 MaxNumPlayers);
 
-    /* Delegate called when session created */
+    //Delegate called when session created
     FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
-    /* Delegate called when session started */
+    //Delegate called when session started
     FOnStartSessionCompleteDelegate OnStartSessionCompleteDelegate;
+    //Delegate for searching for sessions
+    FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
 
-    /** Handles to registered delegates for creating/starting a session */
+    //Handles to registered delegates for creating/starting a session
     FDelegateHandle OnCreateSessionCompleteDelegateHandle;
     FDelegateHandle OnStartSessionCompleteDelegateHandle;
+    //Handle to registered delegate for searching a session
+    FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 
+    
     TSharedPtr<class FOnlineSessionSettings> SessionSettings;
+    TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 
     UNWGameInstance(const FObjectInitializer& ObjectInitializer);
 
@@ -54,4 +60,20 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     *	@param bWasSuccessful true if the async action completed without error, false if there was an error
     */
     void OnStartOnlineGameComplete(FName SessionName, bool bWasSuccessful);
+
+    /**
+    *	Find an online session
+    *
+    *	@param UserId user that initiated the request
+    *	@param bIsLAN are we searching LAN matches
+    *	@param bIsPresence are we searching presence sessions
+    */
+    void FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool bIsLAN, bool bIsPresence);
+
+    /**
+    *	Delegate fired when a session search query has completed
+    *
+    *	@param bWasSuccessful true if the async action completed without error, false if there was an error
+    */
+    void OnFindSessionsComplete(bool bWasSuccessful);
 };

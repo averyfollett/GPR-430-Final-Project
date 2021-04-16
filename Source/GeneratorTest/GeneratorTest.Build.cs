@@ -10,7 +10,7 @@ public class GeneratorTest : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "OnlineSubsystem", "OnlineSubsystemUtils", "Steamworks", "Networking" });
 
-		DynamicallyLoadedModuleNames.Add("OnlineSubsystemSteam");
+		DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

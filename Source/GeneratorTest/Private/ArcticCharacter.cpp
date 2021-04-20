@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Generator.h"
+#include "PanCamera.h"
 #include "WireInterface.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -50,9 +51,9 @@ void AArcticCharacter::BeginPlay()
 
 int AArcticCharacter::SpawnCamera()
 {
-	//TODO: Spawn custom PanCamera class
-	//GetWorld()->SpawnActor()
-	//TODO: Set owned camera local variable
+	const FTransform SpawnTransform = FTransform(FVector(800.0f, 800.0f, 910.0f));
+	const FActorSpawnParameters SpawnParameters;
+	OwnedCamera = GetWorld()->SpawnActor<APanCamera>(APanCamera::StaticClass(), SpawnTransform, SpawnParameters);
 	return 1;
 }
 

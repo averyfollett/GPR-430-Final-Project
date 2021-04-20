@@ -14,8 +14,11 @@ class GENERATORTEST_API APanCamera : public ACameraActor
 {
 	GENERATED_BODY()
 
-	virtual void BeginPlay() override;
+	APanCamera();
 
+	UFUNCTION()
+	virtual void BeginPlay() override;
+	UFUNCTION()
 	virtual void Tick(float DeltaSeconds) override;
 	
 public:

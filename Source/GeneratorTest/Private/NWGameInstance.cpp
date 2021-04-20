@@ -153,6 +153,18 @@ void UNWGameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool b
 			
 			// Finally call the SessionInterface function. The Delegate gets called once this is finished
 			Sessions->FindSessions(*UserId, SearchSettingsRef);
+
+			// Use blueprint session result wrapper struct before broadcasting to blueprints
+			TArray<FBlueprintSessionResult> BlueprintSearchResults;
+			for (FOnlineSessionSearchResult SearchResult : SessionSearch->SearchResults)
+			{
+				FBlueprintSessionResult BlueprintResult;
+				BlueprintResult.OnlineResult = SearchResult;
+				BlueprintSearchResults.Add(BlueprintResult);
+			}
+
+			// Broadcast the search results to blueprint
+			SessionsFound.Broadcast(BlueprintSearchResults);
 		}
 	}
 	else

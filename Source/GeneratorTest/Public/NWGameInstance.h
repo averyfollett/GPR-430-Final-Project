@@ -4,12 +4,16 @@
 //The code here and in the corresponding cpp file is following the tutorial at https://unreal.gg-labs.com/v/4.25/wiki-archives/networking/how-to-use-sessions-in-c++
 
 #pragma once
-
 #include "CoreMinimal.h"
+
 #include "Engine/GameInstance.h"
 #include "Interfaces/OnlineSessionInterface.h"
-
+#include "OnlineSessionSettings.h"
+#include "FindSessionsCallbackProxy.h"
 #include "NWGameInstance.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessionsFound, TArray<FBlueprintSessionResult>, SearchResults);
+
 UCLASS()
 class GENERATORTEST_API UNWGameInstance : public UGameInstance
 {
@@ -50,6 +54,9 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     
     TSharedPtr<class FOnlineSessionSettings> SessionSettings;
     TSharedPtr<class FOnlineSessionSearch> SessionSearch;
+
+    UPROPERTY(BlueprintAssignable)
+    FSessionsFound SessionsFound;
 
     UNWGameInstance(const FObjectInitializer& ObjectInitializer);
 
@@ -111,6 +118,7 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     */
     virtual void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
 
+public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
     void StartOnlineGame();
     

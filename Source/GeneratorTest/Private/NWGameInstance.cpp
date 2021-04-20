@@ -282,3 +282,62 @@ void UNWGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSucce
 		}
 	}
 }
+
+void UNWGameInstance::StartOnlineGame()
+{
+	// Creating a local player where we can get the UserID from
+	ULocalPlayer* const Player = GetFirstGamePlayer();
+	
+	// Call our custom HostSession function. GameSessionName is a GameInstance variable
+	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, true, true, 4);
+}
+
+void UNWGameInstance::FindOnlineGames()
+{
+	ULocalPlayer* const Player = GetFirstGamePlayer();
+
+	FindSessions(Player->GetPreferredUniqueNetId().GetUniqueNetId(), true, true);
+}
+
+void UNWGameInstance::JoinOnlineGame()
+{
+	ULocalPlayer* const Player = GetFirstGamePlayer();
+
+	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
+	FOnlineSessionSearchResult SearchResult;
+
+	// If the Array is not empty, we can go through it
+	if (SessionSearch->SearchResults.Num() > 0)
+	{
+		for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
+		{
+			// To avoid something crazy, we filter sessions from ourself
+			if (SessionSearch->SearchResults[i].Session.OwningUserId != Player->GetPreferredUniqueNetId())
+			{
+				SearchResult = SessionSearch->SearchResults[i];
+
+				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
+				// use a widget where you click on and have a reference for the GameSession it represents which you can use
+				// here
+				JoinSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, SearchResult);
+				break;
+			}
+		}
+	}	
+}
+
+void UNWGameInstance::DestroySessionAndLeaveGame()
+{
+	IOnlineSubsystem* OnlineSub = IOnlineSubsystem::Get();
+	if (OnlineSub)
+	{
+		IOnlineSessionPtr Sessions = OnlineSub->GetSessionInterface();
+
+		if (Sessions.IsValid())
+		{
+			Sessions->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
+
+			Sessions->DestroySession(GameSessionName);
+		}
+	}
+}

@@ -110,4 +110,16 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     *	@param bWasSuccessful true if the async action completed without error, false if there was an error
     */
     virtual void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
+
+    UFUNCTION(BlueprintCallable, Category = "Network|Test")
+    void StartOnlineGame();
+    
+    UFUNCTION(BlueprintCallable, Category = "Network|Test")
+    void FindOnlineGames();
+    
+    UFUNCTION(BlueprintCallable, Category = "Network|Test")
+    void JoinOnlineGame();
+
+    UFUNCTION(BlueprintCallable, Category = "Network|Test")
+        void DestroySessionAndLeaveGame();
 };

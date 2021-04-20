@@ -28,6 +28,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void SetNextPowered(bool bPowered);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void AnimatePressed();
+	UFUNCTION(BlueprintImplementableEvent)
+	void AnimateUnpressed();
+
+	UFUNCTION()
+	void ChangeColor(FLinearColor Color) const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGuid ThisGuid;
 

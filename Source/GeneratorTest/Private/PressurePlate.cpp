@@ -3,6 +3,8 @@
 
 #include "PressurePlate.h"
 
+#include "Powerable.h"
+
 // Sets default values
 APressurePlate::APressurePlate()
 {
@@ -23,6 +25,25 @@ APressurePlate::APressurePlate()
 void APressurePlate::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BottomMaterial = ButtonBase->CreateDynamicMaterialInstance(0);
+	TopMaterial = ButtonTop->CreateDynamicMaterialInstance(0);
+	ThisGuid = FGuid::NewGuid();
+	SetNextPowered(bIsPowered && bIsPressed);
+}
+
+void APressurePlate::SetNextPowered(const bool bPowered)
+{
+	for (AActor* Actor : NextPowerables)
+	{
+		Cast<IPowerable>(Actor)->SetPowered(bPowered, ThisGuid);
+	}
+}
+
+void APressurePlate::ChangeColor(const FLinearColor Color) const
+{
+	BottomMaterial->SetVectorParameterValue(FName("Emissive Color"), Color);
+	TopMaterial->SetVectorParameterValue(FName("Emissive Color"), Color);
 }
 
 // Called every frame

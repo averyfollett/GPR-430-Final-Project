@@ -301,7 +301,7 @@ void UNWGameInstance::StartOnlineGame()
 	ULocalPlayer* const Player = GetFirstGamePlayer();
 	
 	// Call our custom HostSession function. GameSessionName is a GameInstance variable
-	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), FName("Blackout"), true, true, 4);
+	HostSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, true, true, 4);
 }
 
 void UNWGameInstance::FindOnlineGames()
@@ -331,7 +331,7 @@ void UNWGameInstance::JoinOnlineGame()
 				// Once we found sounce a Session that is not ours, just join it. Instead of using a for loop, you could
 				// use a widget where you click on and have a reference for the GameSession it represents which you can use
 				// here
-				JoinSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), FName("Blackout"), SearchResult);
+				JoinSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, SearchResult);
 				break;
 			}
 		}
@@ -349,7 +349,7 @@ void UNWGameInstance::DestroySessionAndLeaveGame()
 		{
 			Sessions->AddOnDestroySessionCompleteDelegate_Handle(OnDestroySessionCompleteDelegate);
 
-			Sessions->DestroySession(FName("Blackout"));
+			Sessions->DestroySession(GameSessionName);
 		}
 	}
 }

@@ -115,7 +115,7 @@ void UNWGameInstance::OnStartOnlineGameComplete(FName SessionName, bool bWasSucc
 	// If the start was successful, we can open a NewMap if we want. Make sure to use "listen" as a parameter!
 	if (bWasSuccessful)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), "NewMap", true, "listen");
+		UGameplayStatics::OpenLevel(GetWorld(), "Level_1", true, "listen");					//Change the default level to load into here
 	}
 }
 

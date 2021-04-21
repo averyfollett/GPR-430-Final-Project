@@ -12,7 +12,7 @@
 #include "FindSessionsCallbackProxy.h"
 #include "NWGameInstance.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessionsFound, TArray<FBlueprintSessionResult>, SearchResults);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessionsFound, const TArray<FBlueprintSessionResult>&, SearchResults);
 
 UCLASS()
 class GENERATORTEST_API UNWGameInstance : public UGameInstance

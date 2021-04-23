@@ -153,18 +153,6 @@ void UNWGameInstance::FindSessions(TSharedPtr<const FUniqueNetId> UserId, bool b
 			
 			// Finally call the SessionInterface function. The Delegate gets called once this is finished
 			Sessions->FindSessions(*UserId, SearchSettingsRef);
-
-			// Use blueprint session result wrapper struct before broadcasting to blueprints
-			TArray<FBlueprintSessionResult> BlueprintSearchResults;
-			for (FOnlineSessionSearchResult SearchResult : SessionSearch->SearchResults)
-			{
-				FBlueprintSessionResult BlueprintResult;
-				BlueprintResult.OnlineResult = SearchResult;
-				BlueprintSearchResults.Add(BlueprintResult);
-			}
-
-			// Broadcast the search results to blueprint
-			SessionsFound.Broadcast(BlueprintSearchResults);
 		}
 	}
 	else
@@ -204,6 +192,18 @@ void UNWGameInstance::OnFindSessionsComplete(bool bWasSuccessful)
 					GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Session Number: %d | Sessionname: %s "), SearchIdx+1, *(SessionSearch->SearchResults[SearchIdx].Session.OwningUserName)));
 				}
 			}
+
+			// Use blueprint session result wrapper struct before broadcasting to blueprints
+			TArray<FBlueprintSessionResult> BlueprintSearchResults;
+			for (const FOnlineSessionSearchResult SearchResult : SessionSearch->SearchResults)
+			{
+				FBlueprintSessionResult BlueprintResult;
+				BlueprintResult.OnlineResult = SearchResult;
+				BlueprintSearchResults.Add(BlueprintResult);
+			}
+
+			// Broadcast the search results to blueprint
+			SessionsFound.Broadcast(BlueprintSearchResults);
 		}
 	}
 }
@@ -318,15 +318,15 @@ void UNWGameInstance::FindOnlineGames()
 	FindSessions(Player->GetPreferredUniqueNetId().GetUniqueNetId(), true, true);
 }
 
-void UNWGameInstance::JoinOnlineGame()
+void UNWGameInstance::JoinOnlineGame(FBlueprintSessionResult SessionResult)
 {
 	ULocalPlayer* const Player = GetFirstGamePlayer();
 
 	// Just a SearchResult where we can save the one we want to use, for the case we find more than one!
-	FOnlineSessionSearchResult SearchResult;
+	//FOnlineSessionSearchResult SearchResult;
 
 	// If the Array is not empty, we can go through it
-	if (SessionSearch->SearchResults.Num() > 0)
+	/*if (SessionSearch->SearchResults.Num() > 0)
 	{
 		for (int32 i = 0; i < SessionSearch->SearchResults.Num(); i++)
 		{
@@ -342,7 +342,9 @@ void UNWGameInstance::JoinOnlineGame()
 				break;
 			}
 		}
-	}	
+	}*/
+
+	JoinSession(Player->GetPreferredUniqueNetId().GetUniqueNetId(), GameSessionName, SessionResult.OnlineResult);
 }
 
 void UNWGameInstance::DestroySessionAndLeaveGame()

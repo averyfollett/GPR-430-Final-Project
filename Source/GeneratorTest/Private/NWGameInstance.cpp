@@ -295,6 +295,13 @@ void UNWGameInstance::OnDestroySessionComplete(FName SessionName, bool bWasSucce
 	}
 }
 
+void UNWGameInstance::BeginDestroy()
+{
+	Super::BeginDestroy();
+	
+	DestroySessionAndLeaveGame();
+}
+
 void UNWGameInstance::StartOnlineGame()
 {
 	// Creating a local player where we can get the UserID from

@@ -118,6 +118,8 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
     */
     virtual void OnDestroySessionComplete(FName SessionName, bool bWasSuccessful);
 
+    virtual void BeginDestroy() override;
+
 public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
     void StartOnlineGame();

@@ -4,29 +4,47 @@
 
 #include "CoreMinimal.h"
 
+#include "Powerable.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "PressurePlate.generated.h"
 
 UCLASS()
-class GENERATORTEST_API APressurePlate : public AActor
+class GENERATORTEST_API APressurePlate : public AActor, public IPowerable
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* BoxComponent;
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* ButtonBase;
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* ButtonTop;
 	
 public:	
 	// Sets default values for this actor's properties
 	APressurePlate();
 
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BoxComponent;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* ButtonBase;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* ButtonTop;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void OnTriggerOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult);
+	UFUNCTION()
+	void EndTriggerOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComponent,
+		int32 OtherBodyIndex);
+
+	virtual void SetPowered(bool IsPowered, FGuid SetterID) override;
 
 	UFUNCTION()
 	void SetNextPowered(bool bPowered);

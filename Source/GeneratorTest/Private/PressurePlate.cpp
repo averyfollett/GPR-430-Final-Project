@@ -3,6 +3,7 @@
 
 #include "PressurePlate.h"
 
+#include "ArcticCharacter.h"
 #include "Powerable.h"
 
 // Sets default values
@@ -13,6 +14,8 @@ APressurePlate::APressurePlate()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Hitbox"));
 	BoxComponent->SetupAttachment(RootComponent);
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &APressurePlate::OnTriggerOverlap);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &APressurePlate::EndTriggerOverlap);
 
 	ButtonBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonBase"));
 	ButtonBase->SetupAttachment(BoxComponent);
@@ -32,11 +35,67 @@ void APressurePlate::BeginPlay()
 	SetNextPowered(bIsPowered && bIsPressed);
 }
 
+void APressurePlate::OnTriggerOverlap(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
+{
+	if (OtherActor->IsA(AArcticCharacter::StaticClass()))
+	{
+		bIsPressed = true;
+		CurrentlyPressedBy.Add(OtherActor);
+		SetPowered(bIsPowered, ThisGuid);
+		AnimatePressed();
+		ChangeColor(FLinearColor::Green);
+	}
+}
+
+void APressurePlate::EndTriggerOverlap(
+	UPrimitiveComponent* OverlappedComponent,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComponent,
+	int32 OtherBodyIndex)
+{
+	if (OtherActor->IsA(AArcticCharacter::StaticClass()))
+	{
+		if (CurrentlyPressedBy.Contains(OtherActor))
+		{
+			CurrentlyPressedBy.Remove(OtherActor);
+
+			if (CurrentlyPressedBy.Num() == 0)
+			{
+				if (bStaysPressed)
+				{
+					bIsPressed = true;
+					SetPowered(bIsPowered, ThisGuid);
+				}
+				else
+				{
+					bIsPressed = false;
+					SetPowered(bIsPowered, ThisGuid);
+					AnimateUnpressed();
+					ChangeColor(FLinearColor::Red);
+				}
+			}
+		}
+	}
+}
+
+void APressurePlate::SetPowered(const bool IsPowered, FGuid SetterID)
+{
+	bIsPowered = IsPowered;
+	SetNextPowered(bIsPressed && IsPowered);
+}
+
 void APressurePlate::SetNextPowered(const bool bPowered)
 {
 	for (AActor* Actor : NextPowerables)
 	{
-		Cast<IPowerable>(Actor)->SetPowered(bPowered, ThisGuid);
+		//TODO: Uncomment this when the wires are set up in C++
+		//Cast<IPowerable>(Actor)->SetPowered(bPowered, ThisGuid);
 	}
 }
 

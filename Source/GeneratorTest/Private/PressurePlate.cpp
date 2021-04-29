@@ -94,8 +94,10 @@ void APressurePlate::SetNextPowered(const bool bPowered)
 {
 	for (AActor* Actor : NextPowerables)
 	{
-		//TODO: Uncomment this when the wires are set up in C++
-		//Cast<IPowerable>(Actor)->SetPowered(bPowered, ThisGuid);
+		if (Cast<IPowerable>(Actor))
+		{
+			Cast<IPowerable>(Actor)->SetPowered(bPowered, ThisGuid);
+		}
 	}
 }
 

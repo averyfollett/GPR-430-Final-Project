@@ -5,6 +5,7 @@
 #include "ArcticCharacter.h"
 #include "GeneratorOutlet.h"
 #include "Components/PointLightComponent.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AGenerator::AGenerator()
@@ -14,6 +15,13 @@ AGenerator::AGenerator()
 
 	PointLightComponent = CreateDefaultSubobject<UPointLightComponent>(TEXT("Point Light"));
 	PointLightComponent->SetupAttachment(RootComponent);
+
+	bReplicates = true;
+	SetReplicateMovement(true);
+	bAlwaysRelevant = true;
+	bNetLoadOnClient = true;
+	NetUpdateFrequency = 30.0;
+	NetPriority =  50.0;
 }
 
 // Called when the game starts or when spawned
@@ -48,7 +56,7 @@ int AGenerator::SetHeldBy(AArcticCharacter* Character)
 	}
 }
 
-int AGenerator::SetIsPickedUp(const bool bPickUp)
+void AGenerator::SetIsPickedUp_Implementation(const bool bPickUp)
 {
 	TArray<AActor*> OverlappingActors;
 	GetOverlappingActors(OverlappingActors);
@@ -60,16 +68,18 @@ int AGenerator::SetIsPickedUp(const bool bPickUp)
 			if (bPickUp)
 			{
 				Cast<AGeneratorOutlet>(Actor)->GeneratorPickedUp();
-				return 1;
 			}
 			else
 			{
 				Cast<AGeneratorOutlet>(Actor)->SnapGeneratorToCenter(this);
-				return 0;
 			}
 		}
 	}
-	
-	return -1;
+}
+
+void AGenerator::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
+{
+	DOREPLIFETIME( AGenerator, bIsHeld);
+	DOREPLIFETIME( AGenerator, HeldBy);
 }
 

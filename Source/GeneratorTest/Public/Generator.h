@@ -28,19 +28,21 @@ public:
 	UFUNCTION()
 	int SetHeldBy(AArcticCharacter* Character = nullptr);
 
-	UFUNCTION()
-	int SetIsPickedUp(bool bPickUp);
+	UFUNCTION(NetMulticast, Reliable)
+	void SetIsPickedUp(bool bPickUp);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 	bool bIsHeld = false;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 	AArcticCharacter* HeldBy;
 
 	UPROPERTY(EditAnywhere)
 	bool bBeingPlaced = false;
+
+	void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
 };

@@ -12,6 +12,8 @@ ASplineWire::ASplineWire()
 	SplineWireComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Wire"));
 	SplineWireComponent->SetupAttachment(RootComponent);
 
+	ThisGuid = FGuid::NewGuid();
+
 	// Disabled since it's handled in the blueprint (purely visual since it sets up the spline mesh)
 	/*
 	for (int Point = 0; Point <= SplineWireComponent->GetNumberOfSplinePoints() - 2; ++Point)
@@ -35,8 +37,6 @@ ASplineWire::ASplineWire()
 void ASplineWire::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ThisGuid = FGuid::NewGuid();
 
 	// Disabled since we were having problems setting up dynamic materials on the spline
 	/*

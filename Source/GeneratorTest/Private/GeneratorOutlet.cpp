@@ -21,6 +21,8 @@ AGeneratorOutlet::AGeneratorOutlet()
 
 	OnActorBeginOverlap.AddDynamic(this, &AGeneratorOutlet::ActorOverlapped);
 	OnActorEndOverlap.AddDynamic(this, &AGeneratorOutlet::ActorOverlapEnded);
+
+	ThisGuid = FGuid::NewGuid();
 }
 
 void AGeneratorOutlet::GeneratorPickedUp()
@@ -82,8 +84,6 @@ void AGeneratorOutlet::ActorOverlapEnded(AActor* Self, AActor* OtherActor)
 void AGeneratorOutlet::BeginPlay()
 {
 	Super::BeginPlay();
-
-	ThisGuid = FGuid::NewGuid();
 
 	GeneratorOutletMaterial = UMaterialInstanceDynamic::Create(nullptr, this);
 }

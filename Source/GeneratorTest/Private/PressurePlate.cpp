@@ -22,6 +22,8 @@ APressurePlate::APressurePlate()
 
 	ButtonTop = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ButtonTop"));
 	ButtonTop->SetupAttachment(ButtonBase);
+
+	ThisGuid = FGuid::NewGuid();
 }
 
 // Called when the game starts or when spawned
@@ -31,7 +33,6 @@ void APressurePlate::BeginPlay()
 
 	BottomMaterial = ButtonBase->CreateDynamicMaterialInstance(0);
 	TopMaterial = ButtonTop->CreateDynamicMaterialInstance(0);
-	ThisGuid = FGuid::NewGuid();
 	SetNextPowered(bIsPowered && bIsPressed);
 }
 

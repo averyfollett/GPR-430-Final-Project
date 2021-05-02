@@ -28,7 +28,7 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
         *	@Param		bIsPresence		"Is the Session to create a presence Session"
         *	@Param		MaxNumPlayers	        Number of Maximum allowed players on this "Session" (Server)
         */
-        bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, bool bISPresence, int32 MaxNumPlayers);
+        bool HostSession(TSharedPtr<const FUniqueNetId> UserId, FName SessionName, bool bIsLAN, int32 MaxNumPlayers);
 
     //Delegate called when session created
     FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;

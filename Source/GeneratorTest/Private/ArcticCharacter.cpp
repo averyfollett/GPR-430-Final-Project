@@ -12,6 +12,7 @@
 #include "WireInterface.h"
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AArcticCharacter::AArcticCharacter()
@@ -31,6 +32,10 @@ AArcticCharacter::AArcticCharacter()
 
 	GetCapsuleComponent()->SetCapsuleHalfHeight(96.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(42.0f);
+
+	bReplicates = true;
+	SetReplicateMovement(true);
+	bNetLoadOnClient = true;
 }
 
 // Called when the game starts or when spawned
@@ -78,18 +83,14 @@ int AArcticCharacter::SetTerrainBasedOnLevel()
 	}
 }
 
-int AArcticCharacter::Drop()
+void AArcticCharacter::Drop_Implementation()
 {
 	bExtendArms = false;
 	bIsReachingForGenerator = bSwitchReachAnim = true;
-	if (PlayerReleaseGenerator())
-	{
-		return 1;
-	}
-	return 0;
+	PlayerReleaseGenerator();
 }
 
-int AArcticCharacter::PickUp()
+void AArcticCharacter::PickUp_Implementation()
 {
 	if (IsValid(Generator))
 	{
@@ -103,17 +104,11 @@ int AArcticCharacter::PickUp()
 			Generator->SetHeldBy(this);
 			Generator->SetIsPickedUp(true);
 			PlayerHoldingGenerator();
-
-			return 1;
 		}
-		
-		return 0;
 	}
-
-	return -1;
 }
 
-int AArcticCharacter::PlayerHoldingGenerator()
+void AArcticCharacter::PlayerHoldingGenerator_Implementation()
 {
 	const FAttachmentTransformRules AttachmentRules = FAttachmentTransformRules(
 		EAttachmentRule::SnapToTarget,
@@ -124,12 +119,10 @@ int AArcticCharacter::PlayerHoldingGenerator()
 	{
 		bIsHoldingObject = bGeneratorInHand = true;
 		bIsReachingForGenerator = false;
-		return 1;
 	}
-	return 0;
 }
 
-int AArcticCharacter::PlayerReleaseGenerator()
+void AArcticCharacter::PlayerReleaseGenerator_Implementation()
 {
 	const FDetachmentTransformRules DetachmentRules = FDetachmentTransformRules(
 		EDetachmentRule::KeepWorld,
@@ -142,7 +135,6 @@ int AArcticCharacter::PlayerReleaseGenerator()
 	Generator->SetHeldBy();
 	Generator->SetIsPickedUp(false);
 	bIsHoldingObject = bGeneratorInHand = bSwitchReachAnim = bIsReachingForGenerator = false;
-	return 1;
 }
 
 void AArcticCharacter::TryRotateWire() const
@@ -259,10 +251,20 @@ void AArcticCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AArcticCharacter::InputActionInteractReleased);
 }
 
-int AArcticCharacter::GeneratorStolen()
+void AArcticCharacter::GeneratorStolen_Implementation()
 {
 	bIsHoldingObject = bGeneratorInHand = bSwitchReachAnim = bIsReachingForGenerator = false;
+}
 
-	return 1;
+void AArcticCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
+{
+	DOREPLIFETIME(AArcticCharacter, bIsHoldingObject);
+	DOREPLIFETIME(AArcticCharacter, bIsReachingForGenerator);
+	DOREPLIFETIME(AArcticCharacter, bSwitchReachAnim);
+	DOREPLIFETIME(AArcticCharacter, bGeneratorInHand);
+	DOREPLIFETIME(AArcticCharacter, bExtendArms);
+	DOREPLIFETIME(AArcticCharacter, bLeanForward);
+	DOREPLIFETIME(AArcticCharacter, PlayerID);
+	DOREPLIFETIME(AArcticCharacter, Terrain);
 }
 

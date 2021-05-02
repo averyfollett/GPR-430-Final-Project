@@ -17,7 +17,10 @@ AGeneratorOutlet::AGeneratorOutlet()
 	OutletTop->SetupAttachment(RootComponent);
 
 	OutletBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OutletBase"));
-	OutletBase->SetupAttachment(RootComponent);
+	OutletBase->SetupAttachment(OutletTop);
+
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+	TriggerBox->SetupAttachment(OutletTop);
 
 	OnActorBeginOverlap.AddDynamic(this, &AGeneratorOutlet::ActorOverlapped);
 	OnActorEndOverlap.AddDynamic(this, &AGeneratorOutlet::ActorOverlapEnded);
@@ -63,7 +66,6 @@ void AGeneratorOutlet::ActorOverlapped(AActor* Self, AActor* OtherActor)
 
 void AGeneratorOutlet::ActorOverlapEnded(AActor* Self, AActor* OtherActor)
 {
-	/*
 	if (OtherActor->IsA(AGenerator::StaticClass()))
 	{
 		if (bStaysPressed)
@@ -77,7 +79,6 @@ void AGeneratorOutlet::ActorOverlapEnded(AActor* Self, AActor* OtherActor)
 			ChangeToRed();
 		}
 	}
-	*/
 }
 
 // Called when the game starts or when spawned
@@ -85,7 +86,7 @@ void AGeneratorOutlet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GeneratorOutletMaterial = UMaterialInstanceDynamic::Create(nullptr, this);
+	GeneratorOutletMaterial = OutletTop->CreateDynamicMaterialInstance(0);
 }
 
 void AGeneratorOutlet::SetListPowerState(const bool bIsPowered)

@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 
 #include "Generator.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "GeneratorOutlet.generated.h"
 
 UCLASS()
-class GENERATORTEST_API AGeneratorOutlet : public AActor
+class GENERATORTEST_API AGeneratorOutlet final : public AActor
 {
 	GENERATED_BODY()
 	
@@ -17,11 +18,13 @@ public:
 	// Sets default values for this actor's properties
 	AGeneratorOutlet();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* OutletBase;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* OutletTop;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBoxComponent* TriggerBox;
 
 	UFUNCTION()
 	void GeneratorPickedUp();

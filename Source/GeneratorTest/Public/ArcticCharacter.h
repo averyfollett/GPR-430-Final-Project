@@ -25,8 +25,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	int GeneratorStolen();
+	UFUNCTION(NetMulticast, Unreliable)
+	void GeneratorStolen();
 
 	UPROPERTY(EditAnywhere)
 	USceneComponent* GrabLocation;
@@ -56,15 +56,15 @@ protected:
 	UFUNCTION()
 	int SetTerrainBasedOnLevel();
 
-	UFUNCTION()
-	int Drop();
-	UFUNCTION()
-	int PickUp();
+	UFUNCTION(Server, Reliable)
+	void Drop();
+	UFUNCTION(Server, Reliable)
+	void PickUp();
 
-	UFUNCTION()
-	int PlayerHoldingGenerator();
-	UFUNCTION()
-	int PlayerReleaseGenerator();
+	UFUNCTION(Server, Reliable)
+	void PlayerHoldingGenerator();
+	UFUNCTION(Server, Reliable)
+	void PlayerReleaseGenerator();
 
 	UFUNCTION()
 	void TryRotateWire() const;
@@ -73,7 +73,7 @@ protected:
 	UFUNCTION()
     void ClientRotateWire(AActor* Actor) const;
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent)//, NetMulticast, Unreliable)
 	void RotateToGenerator();
 
 	UFUNCTION()
@@ -97,7 +97,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BaseLookUpRate = 45.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bIsHoldingObject = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -109,19 +109,19 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> IgnoreActorArray;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bIsReachingForGenerator = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bSwitchReachAnim = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bGeneratorInHand = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bExtendArms = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bLeanForward;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -139,9 +139,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UMaterialInstance*> MaterialArray;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	int PlayerID = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	int Terrain = 0;
+
+	void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const;
 };

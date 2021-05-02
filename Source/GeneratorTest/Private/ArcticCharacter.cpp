@@ -34,7 +34,7 @@ AArcticCharacter::AArcticCharacter()
 	GetCapsuleComponent()->SetCapsuleRadius(42.0f);
 
 	bReplicates = true;
-	SetReplicateMovement(true);
+    ACharacter::SetReplicateMovement(true);
 	bNetLoadOnClient = true;
 }
 
@@ -258,6 +258,8 @@ void AArcticCharacter::GeneratorStolen_Implementation()
 
 void AArcticCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
 	DOREPLIFETIME(AArcticCharacter, bIsHoldingObject);
 	DOREPLIFETIME(AArcticCharacter, bIsReachingForGenerator);
 	DOREPLIFETIME(AArcticCharacter, bSwitchReachAnim);

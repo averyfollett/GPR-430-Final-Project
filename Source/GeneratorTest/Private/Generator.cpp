@@ -17,7 +17,7 @@ AGenerator::AGenerator()
 	PointLightComponent->SetupAttachment(RootComponent);
 
 	bReplicates = true;
-	SetReplicateMovement(true);
+    ACharacter::SetReplicateMovement(true);
 	bAlwaysRelevant = true;
 	bNetLoadOnClient = true;
 	NetUpdateFrequency = 30.0;
@@ -79,6 +79,8 @@ void AGenerator::SetIsPickedUp_Implementation(const bool bPickUp)
 
 void AGenerator::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
 	DOREPLIFETIME( AGenerator, bIsHeld);
 	DOREPLIFETIME( AGenerator, HeldBy);
 }

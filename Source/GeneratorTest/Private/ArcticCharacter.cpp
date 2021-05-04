@@ -61,11 +61,10 @@ void AArcticCharacter::BeginPlay()
 
 void AArcticCharacter::LoadChatUI()
 {
-	CreateWidget<UChatUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), UChatUIWidget::StaticClass());
-
-	
+	ChatUI = CreateWidget<UChatUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), ChatUIClass);
 	
 	ChatUI->AddToViewport();
+	ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
 }
 
 int AArcticCharacter::SpawnCamera()
@@ -238,17 +237,17 @@ void AArcticCharacter::InputActionUseChat()
 
 void AArcticCharacter::PlayerOpenCloseChat()
 {
-	if(!isUsingChat)
+	if(isUsingChat)
 	{
-		ChatInstance->OpenCloseChat(ESlateVisibility::Hidden);
+		ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
 	}
 	else
 	{
-		ChatInstance->OpenCloseChat(ESlateVisibility::Visible);
+		ChatUI->OpenCloseChat(ESlateVisibility::Visible);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameAndUI());
-		//FInputModeGameAndUI().SetWidgetToFocus(ChatInstance);
+		ChatUI->SetFocus();
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
 	}
 }
@@ -285,7 +284,7 @@ void AArcticCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	//Action
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AArcticCharacter::InputActionInteractPressed);
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AArcticCharacter::InputActionInteractReleased);
-	PlayerInputComponent->BindAction("UseChat", IE_Released, this, &AArcticCharacter::InputActionInteractReleased);
+	PlayerInputComponent->BindAction("UseChat", IE_Released, this, &AArcticCharacter::InputActionUseChat);
 }
 
 void AArcticCharacter::GeneratorStolen_Implementation()
@@ -320,7 +319,7 @@ void AArcticCharacter::UseChat_Implementation(const FString& PlayerName, const F
 
 void AArcticCharacter::EnterText_Implementation(const FString& PlayerName, const FString& Text)
 {
-	if(IsValid(ChatInstance))
+	if(IsValid(ChatUI))
 	{
 		ChatLine = CreateWidget<UChatLineUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 		ChatLine->PlayerName = PlayerName;

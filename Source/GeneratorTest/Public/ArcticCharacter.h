@@ -64,6 +64,9 @@ public:
 	int PlayerID = 0;
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
+	TSubclassOf<UUserWidget> ChatUIClass;
+	
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	class UChatUIWidget* ChatUI;
 	

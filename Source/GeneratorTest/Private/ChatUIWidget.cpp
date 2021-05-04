@@ -7,31 +7,6 @@
 #include "Widgets/Text/SMultiLineEditableText.h"
 #include "ArcticCharacter.h"
 
-void UChatUIWidget::OpenCloseChat(ESlateVisibility isVisible)
-{
-	//MultiLineTextBox->SetVisibility(isVisible);
-}
-
-//FReply UChatUIWidget::NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
-//{
-//	if(InKeyEvent.GetKey() == EKeys().Enter)
-//	{
-//		FString text = MultiLineTextBox->GetText().ToString();
-//
-//		Player->PlayerOpenCloseChat();
-//
-//		FString playerNum = FString::FromInt(Player->PlayerID);
-//		Player->UseChat(playerNum, text);
-//
-//		//MultiLineTextBox->SetText();
-//
-//		return true;
-//	}
-//
-//	return false;
-//}
-
-
 void UChatUIWidget::BeginPlay()
 {
 	//ChatInstance = Cast<UNWGameInstance>(GetWorld()->GetGameInstance())->GetChatUI();

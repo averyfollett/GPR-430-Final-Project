@@ -23,7 +23,8 @@ class GENERATORTEST_API UChatUIWidget : public UUserWidget
 	void BeginPlay();
 
 	public:
-	void OpenCloseChat(ESlateVisibility Visibility);
+	UFUNCTION(BlueprintImplementableEvent)
+	void OpenCloseChat(ESlateVisibility IsVisible);
 
 	//virtual FEventReply OnPreviewKeyDown(FGeometry InGeometry, FKeyEvent InKeyEvent) override;
 	

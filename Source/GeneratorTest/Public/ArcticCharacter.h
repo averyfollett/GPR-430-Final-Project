@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "ChatUIWidget.h"
 #include "ArcticCharacter.generated.h"
 
 class AGenerator;
@@ -28,6 +28,17 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void GeneratorStolen();
 
+	void PlayerOpenCloseChat();
+
+	UFUNCTION(Server, Reliable)
+	void UseChat(const FString& PlayerName, const FString& Text);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void EnterText(const FString& PlayerName, const FString& Text);
+
+	UPROPERTY()
+	UChatUIWidget* ChatLine;
+	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* GrabLocation;
 
@@ -39,6 +50,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float PickupRadius = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	int PlayerID = 0;
 
 protected:
 	// Called when the game starts or when spawned
@@ -91,6 +105,8 @@ protected:
 	void InputActionInteractPressed();
 	UFUNCTION()
 	void InputActionInteractReleased();
+	UFUNCTION()
+	void InputActionUseChat();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BaseTurnRate = 45.0f;
@@ -140,10 +156,13 @@ protected:
 	TArray<UMaterialInstance*> MaterialArray;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-	int PlayerID = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	int Terrain = 0;
+
+	UPROPERTY()
+	bool isUsingChat = false;
+
+	UPROPERTY()
+	UChatUIWidget* ChatInstance;
 
 	void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const;
 };

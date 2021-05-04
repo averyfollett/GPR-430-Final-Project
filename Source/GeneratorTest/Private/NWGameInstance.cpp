@@ -339,3 +339,15 @@ void UNWGameInstance::DestroySessionAndLeaveGame()
 		}
 	}
 }
+
+void UNWGameInstance::LoadChatUI()
+{
+	if (ChatUIClass == nullptr)
+		return;
+
+	ChatUI = CreateWidget<UChatUIWidget>(this, ChatUIClass);
+	if (ChatUI == nullptr)
+		return;
+
+	ChatUI->AddToViewport();
+}

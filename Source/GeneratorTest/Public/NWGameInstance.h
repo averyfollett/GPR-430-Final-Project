@@ -10,6 +10,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 #include "FindSessionsCallbackProxy.h"
+#include "ChatUIWidget.h"
 #include "NWGameInstance.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSessionsFound, const TArray<FBlueprintSessionResult>&, SearchResults);
@@ -120,6 +121,15 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
 
     virtual void BeginDestroy() override;
 
+    
+protected:
+    //Dynamic refrence to the chat UI blueprint class
+    TSubclassOf<class UUserWidget> ChatUIClass;
+
+    //reference to the chat UI blueprint
+    UPROPERTY(BlueprintReadWrite, Category = "UI")
+    class UChatUIWidget* ChatUI;
+    
 public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
     void StartOnlineGame();
@@ -132,4 +142,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
         void DestroySessionAndLeaveGame();
+
+    FORCEINLINE class UChatUIWidget* GetChatUI() const { return ChatUI; }
+
+    UFUNCTION(BlueprintCallable)
+    void LoadChatUI();
 };

@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
 
+#include "ChatLineUIWidget.h"
+#include "GameFramework/Character.h"
+#include "ChatUIWidget.h"
 #include "ArcticCharacter.generated.h"
 
 class AGenerator;
@@ -28,6 +30,27 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void GeneratorStolen();
 
+	UFUNCTION(BlueprintCallable)
+	void PlayerOpenCloseChat();
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void UseChat(const FString& PlayerName, const FString& Text);
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void EnterText(const FString& PlayerName, const FString& Text);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
+	TSubclassOf<UUserWidget> ChatLineClass;
+
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	UChatLineUIWidget* ChatLine;
+
+	
+	FORCEINLINE class UChatUIWidget* GetChatUI() const { return ChatUI; }
+    
+    UFUNCTION(BlueprintCallable)
+    void LoadChatUI();
+	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* GrabLocation;
 
@@ -40,7 +63,17 @@ public:
 	UPROPERTY(EditAnywhere)
 	float PickupRadius = 200.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	int PlayerID = 0;
+
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
+	TSubclassOf<UUserWidget> ChatUIClass;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	class UChatUIWidget* ChatUI;
+	
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -91,6 +124,8 @@ protected:
 	void InputActionInteractPressed();
 	UFUNCTION()
 	void InputActionInteractReleased();
+	UFUNCTION()
+	void InputActionUseChat();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float BaseTurnRate = 45.0f;
@@ -140,10 +175,13 @@ protected:
 	TArray<UMaterialInstance*> MaterialArray;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
-	int PlayerID = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	int Terrain = 0;
+
+	UPROPERTY()
+	bool isUsingChat = false;
+
+	UPROPERTY()
+	UChatUIWidget* ChatInstance;
 
 	void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const;
 };

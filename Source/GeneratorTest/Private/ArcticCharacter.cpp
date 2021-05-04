@@ -2,6 +2,8 @@
 
 
 #include "ArcticCharacter.h"
+
+#include "ChatLineUIWidget.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -13,6 +15,7 @@
 #include "Camera/CameraActor.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "NWGameInstance.h"
 
 // Sets default values
 AArcticCharacter::AArcticCharacter()
@@ -52,6 +55,17 @@ void AArcticCharacter::BeginPlay()
 	Client_UpdateColor();
 	SetTerrainBasedOnLevel();
 	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraFade(1.0f, 0.0f, 3.0f, FLinearColor::Black);
+
+	LoadChatUI();
+}
+
+void AArcticCharacter::LoadChatUI()
+{
+	ChatUI = CreateWidget<UChatUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), ChatUIClass);
+	
+	ChatUI->AddToViewport();
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+	//ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
 }
 
 int AArcticCharacter::SpawnCamera()
@@ -217,6 +231,29 @@ void AArcticCharacter::InputActionInteractReleased()
 	}
 }
 
+void AArcticCharacter::InputActionUseChat()
+{
+	PlayerOpenCloseChat();
+}
+
+void AArcticCharacter::PlayerOpenCloseChat()
+{
+	if(isUsingChat)
+	{
+		ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = false;
+	}
+	else
+	{
+		ChatUI->OpenCloseChat(ESlateVisibility::Visible);
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameAndUI());
+		//ChatUI->SetFocus();
+		//ChatUI->SetKeyboardFocus();
+		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+	}
+}
+
 // Called every frame
 void AArcticCharacter::Tick(float DeltaTime)
 {
@@ -249,6 +286,7 @@ void AArcticCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	//Action
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AArcticCharacter::InputActionInteractPressed);
 	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AArcticCharacter::InputActionInteractReleased);
+	PlayerInputComponent->BindAction("UseChat", IE_Released, this, &AArcticCharacter::InputActionUseChat);
 }
 
 void AArcticCharacter::GeneratorStolen_Implementation()
@@ -268,5 +306,28 @@ void AArcticCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > &
 	DOREPLIFETIME(AArcticCharacter, bLeanForward);
 	DOREPLIFETIME(AArcticCharacter, PlayerID);
 	DOREPLIFETIME(AArcticCharacter, Terrain);
+}
+
+void AArcticCharacter::UseChat_Implementation(const FString& PlayerName, const FString& Text)
+{
+	TArray<AActor*> allActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AArcticCharacter::StaticClass(), allActors);
+
+	for (AActor* Actor : allActors)
+	{
+		EnterText(PlayerName, Text);
+	}
+}
+
+void AArcticCharacter::EnterText_Implementation(const FString& PlayerName, const FString& Text)
+{
+	if(IsValid(ChatUI))
+	{
+		ChatLine = CreateWidget<UChatLineUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), ChatLineClass);
+		ChatLine->PlayerName = PlayerName;
+		ChatLine->Text = Text;
+
+		ChatLine->AddToViewport();
+	}
 }
 

@@ -10,6 +10,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "OnlineSessionSettings.h"
 #include "FindSessionsCallbackProxy.h"
+#include "ChatUIWidget.h"
 #include "NWGameInstance.generated.h"
 
 // Custom delegate for us to handle displaying sessions in UMG with blueprints
@@ -92,6 +93,10 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
 
     virtual void BeginDestroy() override;
 
+    
+protected:
+
+    
 public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
     void StartOnlineGame();

@@ -156,12 +156,12 @@ void AArcticCharacter::TryRotateWire() const
 	}
 }
 
-void AArcticCharacter::ServerRotateWire(AActor* Actor) const
+void AArcticCharacter::ServerRotateWire_Implementation(AActor* Actor) const
 {
 	Cast<IWireInterface>(Actor)->RotateWire();
 }
 
-void AArcticCharacter::ClientRotateWire(AActor* Actor) const
+void AArcticCharacter::ClientRotateWire_Implementation(AActor* Actor) const
 {
 	Cast<IWireInterface>(Actor)->RotateWire();
 }

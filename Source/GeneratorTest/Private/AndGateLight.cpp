@@ -3,6 +3,8 @@
 
 #include "AndGateLight.h"
 
+#include "Net/UnrealNetwork.h"
+
 AAndGateLight::AAndGateLight()
 {
 	ThisGuid = FGuid::NewGuid();
@@ -56,4 +58,11 @@ void AAndGateLight::SetPowered(bool IsPowered, FGuid SetterID)
 	//This is where you would add a delay if you wanted
 	PowerNext(bIsPowered);
 	bWasPowered = bIsPowered || bWasPowered;
+}
+
+void AAndGateLight::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAndGateLight, ThisGuid);
 }

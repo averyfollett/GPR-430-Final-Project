@@ -52,19 +52,21 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> PoweredObjects;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	FGuid ThisGuid;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UParticleSystem* SparksParticles;
 
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable)
 	void ChangeToGreen() const;
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable)
 	void ChangeToRed() const;
 
 	UPROPERTY()
 	UMaterialInstanceDynamic* GeneratorOutletMaterial;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 public:	
 	// Called every frame

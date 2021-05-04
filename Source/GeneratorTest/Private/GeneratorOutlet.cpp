@@ -6,6 +6,7 @@
 
 #include "Powerable.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AGeneratorOutlet::AGeneratorOutlet()
@@ -97,14 +98,21 @@ void AGeneratorOutlet::SetListPowerState(const bool bIsPowered)
 	}
 }
 
-void AGeneratorOutlet::ChangeToGreen() const
+void AGeneratorOutlet::ChangeToGreen_Implementation() const
 {
 	GeneratorOutletMaterial->SetVectorParameterValue(FName("Emissive Color"), FColor::Green);
 }
 
-void AGeneratorOutlet::ChangeToRed() const
+void AGeneratorOutlet::ChangeToRed_Implementation() const
 {
 	GeneratorOutletMaterial->SetVectorParameterValue(FName("Emissive Color"), FColor::Red);
+}
+
+void AGeneratorOutlet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AGeneratorOutlet, ThisGuid);
 }
 
 // Called every frame

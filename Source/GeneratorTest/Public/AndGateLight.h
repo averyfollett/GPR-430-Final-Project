@@ -39,7 +39,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FGuid, bool> PowerStateOfInputs;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Replicated)
 	FGuid ThisGuid;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -56,4 +56,6 @@ protected:
 	bool bHasFinishedSetup = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bWasPowered = false;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

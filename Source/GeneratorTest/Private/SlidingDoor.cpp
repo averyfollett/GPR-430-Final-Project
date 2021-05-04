@@ -45,8 +45,13 @@ void ASlidingDoor::SetPowered(const bool IsPowered, FGuid SetterID)
 	{
 		ActivateLights();
 		SetActorEnableCollision(false);
-		MoveRightDoor();
-		LeftDoor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		MoveLeftDoor();
+		MoveDoors();
 	}
+}
+
+void ASlidingDoor::MoveDoors_Implementation()
+{
+	MoveRightDoor();
+	LeftDoor->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MoveLeftDoor();
 }

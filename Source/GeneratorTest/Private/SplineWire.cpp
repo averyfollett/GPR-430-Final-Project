@@ -5,6 +5,7 @@
 
 #include "Powerable.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ASplineWire::ASplineWire()
@@ -52,7 +53,7 @@ void ASplineWire::BeginPlay()
 	SetPowerNext(bIsPowered);
 }
 
-void ASplineWire::SetAppearance(bool Powered)
+void ASplineWire::SetAppearance_Implementation(bool Powered)
 {
 	if (bIsSetupDone)
 	{
@@ -102,4 +103,17 @@ void ASplineWire::SetPowered(bool IsPowered, FGuid SetterID)
 	//SetAppearance(bIsPowered);
 	//Optional Delay...add here
 	SetPowerNext(bIsPowered);
+}
+
+FGuid ASplineWire::GetGUID()
+{
+	return ThisGuid;
+}
+
+void ASplineWire::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASplineWire, bIsPowered);
+	DOREPLIFETIME(ASplineWire, ThisGuid);
 }

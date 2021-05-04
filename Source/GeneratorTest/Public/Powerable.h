@@ -23,5 +23,5 @@ class GENERATORTEST_API IPowerable
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	virtual void SetPowered(bool IsPowered, FGuid SetterID);
-	virtual FGuid SetGUID();
+	virtual FGuid GetGUID();
 };

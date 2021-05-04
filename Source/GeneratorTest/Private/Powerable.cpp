@@ -8,7 +8,7 @@ void IPowerable::SetPowered(bool IsPowered, FGuid SetterID)
 {
 }
 
-FGuid IPowerable::SetGUID()
+FGuid IPowerable::GetGUID()
 {
 	return {};
 }

@@ -41,6 +41,8 @@ protected:
 
 	virtual void SetPowered(bool IsPowered, FGuid SetterID) override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MoveDoors();
 	UFUNCTION(BlueprintImplementableEvent)
 	void MoveLeftDoor();
 	UFUNCTION(BlueprintImplementableEvent)

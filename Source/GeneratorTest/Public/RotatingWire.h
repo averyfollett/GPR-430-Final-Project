@@ -39,13 +39,18 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	
+
+	UFUNCTION(NetMulticast, Reliable)
 	virtual void RotateWire() override;
 
+	UFUNCTION(NetMulticast, Reliable)
 	virtual void SetPowered(bool IsPowered, FGuid SetterID) override;
 
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable)
 	void SetNextPowered(bool Powered, FGuid PowerSource);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void SetAppearance(bool Powered) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGuid ThisGuid;
@@ -62,7 +67,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<float> AngleList;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	int CurrentAngleIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -74,6 +79,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UMaterialInstanceDynamic* WireMaterialInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FRotator StartingRotation;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

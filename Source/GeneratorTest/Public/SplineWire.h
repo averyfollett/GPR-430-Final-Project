@@ -26,16 +26,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable)
 	void SetAppearance(bool Powered);
 
 	UFUNCTION()
 	void SetPowerNext(bool Powered);
 
 	virtual void SetPowered(bool IsPowered, FGuid SetterID) override;
+	virtual FGuid GetGUID() override;
 
 public:	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bIsPowered = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -48,7 +49,7 @@ public:
 	bool bIsForward = true;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FGuid ThisGuid;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -69,4 +70,6 @@ protected:
 	UStaticMesh* WireMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMaterialInstance* WireMaterialInstance;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

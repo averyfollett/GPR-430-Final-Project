@@ -68,12 +68,12 @@ protected:
 
 	UFUNCTION()
 	void TryRotateWire() const;
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 	void ServerRotateWire(AActor* Actor) const;
-	UFUNCTION()
+	UFUNCTION(Client, Reliable)
     void ClientRotateWire(AActor* Actor) const;
 
-	UFUNCTION(BlueprintImplementableEvent)//, NetMulticast, Unreliable)
+	UFUNCTION(BlueprintImplementableEvent)
 	void RotateToGenerator();
 
 	UFUNCTION()

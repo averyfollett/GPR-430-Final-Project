@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "ChatLineUIWidget.h"
 #include "GameFramework/Character.h"
 #include "ChatUIWidget.h"
 #include "ArcticCharacter.generated.h"
@@ -37,8 +39,14 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void EnterText(const FString& PlayerName, const FString& Text);
 
-	UPROPERTY()
-	UChatUIWidget* ChatLine;
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	UChatLineUIWidget* ChatLine;
+
+	
+	FORCEINLINE class UChatUIWidget* GetChatUI() const { return ChatUI; }
+    
+    UFUNCTION(BlueprintCallable)
+    void LoadChatUI();
 	
 	UPROPERTY(EditAnywhere)
 	USceneComponent* GrabLocation;
@@ -56,6 +64,10 @@ public:
 	int PlayerID = 0;
 
 protected:
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	class UChatUIWidget* ChatUI;
+	
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -2,6 +2,8 @@
 
 
 #include "ArcticCharacter.h"
+
+#include "ChatLineUIWidget.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -54,7 +56,16 @@ void AArcticCharacter::BeginPlay()
 	SetTerrainBasedOnLevel();
 	UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->StartCameraFade(1.0f, 0.0f, 3.0f, FLinearColor::Black);
 
-	ChatInstance = Cast<UNWGameInstance>(GetWorld()->GetGameInstance())->GetChatUI();
+	LoadChatUI();
+}
+
+void AArcticCharacter::LoadChatUI()
+{
+	CreateWidget<UChatUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), UChatUIWidget::StaticClass());
+
+	
+	
+	ChatUI->AddToViewport();
 }
 
 int AArcticCharacter::SpawnCamera()
@@ -311,7 +322,9 @@ void AArcticCharacter::EnterText_Implementation(const FString& PlayerName, const
 {
 	if(IsValid(ChatInstance))
 	{
-		//ChatLine = CreateWidget<UChatUIWidget>();
+		ChatLine = CreateWidget<UChatLineUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		ChatLine->PlayerName = PlayerName;
+		ChatLine->Text = Text;
 	}
 }
 

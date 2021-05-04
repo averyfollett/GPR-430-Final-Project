@@ -123,12 +123,7 @@ class GENERATORTEST_API UNWGameInstance : public UGameInstance
 
     
 protected:
-    //Dynamic refrence to the chat UI blueprint class
-    TSubclassOf<class UUserWidget> ChatUIClass;
 
-    //reference to the chat UI blueprint
-    UPROPERTY(BlueprintReadWrite, Category = "UI")
-    class UChatUIWidget* ChatUI;
     
 public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
@@ -143,8 +138,5 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Network|Test")
         void DestroySessionAndLeaveGame();
 
-    FORCEINLINE class UChatUIWidget* GetChatUI() const { return ChatUI; }
 
-    UFUNCTION(BlueprintCallable)
-    void LoadChatUI();
 };

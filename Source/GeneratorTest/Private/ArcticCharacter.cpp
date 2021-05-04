@@ -64,7 +64,8 @@ void AArcticCharacter::LoadChatUI()
 	ChatUI = CreateWidget<UChatUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), ChatUIClass);
 	
 	ChatUI->AddToViewport();
-	ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
+	//ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
 }
 
 int AArcticCharacter::SpawnCamera()
@@ -247,7 +248,8 @@ void AArcticCharacter::PlayerOpenCloseChat()
 	{
 		ChatUI->OpenCloseChat(ESlateVisibility::Visible);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameAndUI());
-		ChatUI->SetFocus();
+		//ChatUI->SetFocus();
+		//ChatUI->SetKeyboardFocus();
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->bShowMouseCursor = true;
 	}
 }
@@ -321,9 +323,11 @@ void AArcticCharacter::EnterText_Implementation(const FString& PlayerName, const
 {
 	if(IsValid(ChatUI))
 	{
-		ChatLine = CreateWidget<UChatLineUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		ChatLine = CreateWidget<UChatLineUIWidget>(UGameplayStatics::GetPlayerController(GetWorld(), 0), ChatLineClass);
 		ChatLine->PlayerName = PlayerName;
 		ChatLine->Text = Text;
+
+		ChatLine->AddToViewport();
 	}
 }
 

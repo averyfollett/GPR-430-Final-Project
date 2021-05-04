@@ -39,6 +39,9 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void EnterText(const FString& PlayerName, const FString& Text);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
+	TSubclassOf<UUserWidget> ChatLineClass;
+
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	UChatLineUIWidget* ChatLine;
 

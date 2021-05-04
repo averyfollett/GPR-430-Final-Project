@@ -28,9 +28,10 @@ public:
 	UFUNCTION(NetMulticast, Unreliable)
 	void GeneratorStolen();
 
+	UFUNCTION(BlueprintCallable)
 	void PlayerOpenCloseChat();
 
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void UseChat(const FString& PlayerName, const FString& Text);
 
 	UFUNCTION(NetMulticast, Unreliable)

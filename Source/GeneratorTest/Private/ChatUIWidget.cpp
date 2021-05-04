@@ -9,7 +9,7 @@
 
 void UChatUIWidget::OpenCloseChat(ESlateVisibility isVisible)
 {
-	MultiLineTextBox->SetVisibility(isVisible);
+	//MultiLineTextBox->SetVisibility(isVisible);
 }
 
 //FReply UChatUIWidget::NativeOnPreviewKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)

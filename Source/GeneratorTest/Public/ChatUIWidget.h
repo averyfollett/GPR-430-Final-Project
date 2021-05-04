@@ -17,8 +17,8 @@ class GENERATORTEST_API UChatUIWidget : public UUserWidget
 	class AArcticCharacter* Player;
 	
 
-	UPROPERTY(meta = (BindWidget))
-	class UMultiLineEditableText* MultiLineTextBox;
+	//UPROPERTY(meta = (BindWidget))
+	//class UMultiLineEditableText* MultiLineTextBox;
 
 	void BeginPlay();
 

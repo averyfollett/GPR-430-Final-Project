@@ -1,3 +1,6 @@
+Note: This is an improvement on an older project made entirely in blueprints that used a 3rd part plugin for networking.
+Our contributions are only in Main_Menu_Level and Level_1_CPP, the rest are leftovers.
+
 How to Play:
 - Open two instances of the game on the same computer (if launching in editor, set # of players to 2 and play mode to Standalone Game and play from the main menu)
 - On one instance, press Play, then Host (as no sessions will be found)

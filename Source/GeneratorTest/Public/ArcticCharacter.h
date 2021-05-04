@@ -44,7 +44,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	UChatLineUIWidget* ChatLine;
-
 	
 	FORCEINLINE class UChatUIWidget* GetChatUI() const { return ChatUI; }
     
@@ -72,7 +71,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	class UChatUIWidget* ChatUI;
-	
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -178,10 +176,10 @@ protected:
 	int Terrain = 0;
 
 	UPROPERTY()
-	bool isUsingChat = false;
+	bool bIsUsingChat = false;
 
 	UPROPERTY()
 	UChatUIWidget* ChatInstance;
 
-	void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const;
+	virtual void GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const override;
 };

@@ -238,7 +238,7 @@ void AArcticCharacter::InputActionUseChat()
 
 void AArcticCharacter::PlayerOpenCloseChat()
 {
-	if(isUsingChat)
+	if(bIsUsingChat)
 	{
 		ChatUI->OpenCloseChat(ESlateVisibility::Hidden);
 		UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetInputMode(FInputModeGameOnly());
